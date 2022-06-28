@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class AddToDoViewController: UIViewController {
     var previousVC = ToDoTableViewController()
@@ -22,15 +23,21 @@ class AddToDoViewController: UIViewController {
     }
     
     @IBAction func addTapped(_ sender: Any) {
-        let toDo = ToDo()
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        let context = appDelegate.persistentContainer.viewContext
+    
+        let toDo = ToDoCD(context: context)
+        
+        toDo.name = titletextField.text
+        toDo.important = importantSwitch.isOn
+        
+        appDelegate.saveContext()
+        
+        navigationController?.popViewController(animated: true)
 
-        if let titleText = titletextField.text {
-            toDo.name = titleText
-            toDo.important = importantSwitch.isOn
-          }
-          previousVC.toDos.append(toDo)
-          previousVC.tableView.reloadData()
-          navigationController?.popViewController(animated: true)
     }
     
     
